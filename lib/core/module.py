@@ -11,22 +11,27 @@ from lib.core import base
 class Module(base.Base):
     """Module of framework"""
 
-    Name = ''
-    Description = ''
-    Author = ''
-    References = ''
-    License = ''
+    meta = {
+        'name': '',
+        'author': '',
+        'description': '',
+        'comments': '',
+        'references': [],
+        'license': '',
+        'options': {
+            # 'key': [value, default, description]
+        }
+    }
 
     def __init__(self):
         base.Base.__init__(self, verbose=False)
 
+        # self.register_option(self, key, value, default, description):
+        for option in self.meta['options'].items():
+            (key, [value, default_value, desc]) = option
+            self.register_option(key, value, default_value, desc)
+
     def show_options(self):
-        rjust_length = 18
-        self.output('')
-        self.output("  Name: %s".rjust(rjust_length) % self.Name)
-        self.output("  Description: %s".rjust(rjust_length) % self.Description)
-        self.output("  Author: %s".rjust(rjust_length) % self.Author)
-        self.output("  References: %s".rjust(rjust_length) % self.References)
         base.Base.show_options(self)
 
     def do_run(self, *args, **kwargs):
