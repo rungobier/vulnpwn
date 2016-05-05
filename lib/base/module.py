@@ -5,7 +5,7 @@
 # Current source: https://github.com/open-security/Open-Security-Framework/
 ##
 
-from lib.core import base
+from lib.base import base
 
 
 class Module(base.Base):

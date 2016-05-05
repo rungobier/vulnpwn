@@ -5,7 +5,7 @@
 # Current source: https://github.com/open-security/Open-Security-Framework/
 ##
 
-from lib.core import framework
+from lib.base import framework
 from lib.mixins.threadpool import threadpool
 import sys
 import imp
