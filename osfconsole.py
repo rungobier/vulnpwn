@@ -11,7 +11,7 @@ import sys
 
 sys.dont_write_bytecode = True
 
-from lib.core import base
+from lib.base import base
 
 
 try:
