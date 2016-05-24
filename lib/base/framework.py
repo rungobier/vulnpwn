@@ -8,7 +8,6 @@
 import io
 import os
 import cmd
-import logging
 import subprocess
 
 
@@ -34,7 +33,7 @@ class Colors(object):
 class Framework(cmd.Cmd):
     """Core Framework"""
 
-    prompt = 'Open-Security-Framework > '
+    prompt = 'vulnpwn > '
     prompt_fmt = '%s (\033[33m%s\033[m) > '
     ruler = ':'
     lastcmd = ''
@@ -60,7 +59,7 @@ class Framework(cmd.Cmd):
         self.framework_path = __file__
 
         self.path_sep = os.path.sep
-        self.app_name = 'Open-Security-Framework'
+        self.app_name = 'vulnpwn'
         self.app_path = self.dirpath(self.dirpath(self.dirpath(
             self.framework_path)))
 
@@ -71,15 +70,7 @@ class Framework(cmd.Cmd):
                                        'modules', self.path_sep)
 
         self.home_path = os.path.expanduser('~')    # Current User home path
-
         self.verbose = verbose
-        if self.verbose:
-            self.verLevel = logging.DEBUG
-        else:
-            self.verLevel = logging.INFO
-
-        logging.basicConfig(level=self.verLevel, format='%(message)s')
-        self.logger = logging.getLogger('framework-log')
 
     def emptyline(self):
         """Called when an empty line is entered in response to the prompt."""
@@ -136,19 +127,20 @@ class Framework(cmd.Cmd):
 
     def error(self, line):
         """output error message"""
-        self.logger.error('[x] %s' % line)
+        print('%s[!] %s%s' % (Colors.R, self.getUnicode(line), Colors.N))
 
     def warn(self, line):
         """output warnings message"""
-        self.logger.warn('[!] %s' % line)
+        print('%s[*]%s %s' % (Colors.G, Colors.N, self.getUnicode(line)))
 
     def output(self, line):
         """output text message"""
-        self.logger.info(line)
+        print('%s[*]%s %s' % (Colors.B, Colors.N, self.getUnicode(line)))
 
     def debug(self, line):
         """output debug text message"""
-        self.logger.debug('[+] %s' % line)
+        if self.verbose:
+            self.output(line)
 
     # ======================
     #  FRAMEWORK COMMANDS
