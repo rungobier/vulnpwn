@@ -34,7 +34,7 @@ class Colors(object):
 class Framework(cmd.Cmd):
     """Core Framework"""
 
-    prompt = 'Open-Security-Framework > '
+    prompt = 'vulnpwn > '
     prompt_fmt = '%s (\033[33m%s\033[m) > '
     ruler = ':'
     lastcmd = ''
@@ -60,7 +60,7 @@ class Framework(cmd.Cmd):
         self.framework_path = __file__
 
         self.path_sep = os.path.sep
-        self.app_name = 'Open-Security-Framework'
+        self.app_name = 'vulnpwn'
         self.app_path = self.dirpath(self.dirpath(self.dirpath(
             self.framework_path)))
 
