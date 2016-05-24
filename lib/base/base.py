@@ -6,7 +6,7 @@
 ##
 
 from lib.base import framework
-from lib.mixins.threadpool import threadpool
+import threadpool
 import sys
 import imp
 
@@ -15,9 +15,6 @@ class Base(framework.Framework):
 
     def __init__(self, verbose=False):
         framework.Framework.__init__(self, verbose)
-
-        self.register_option('THREADS', 1, 1, 'Set default threads number')
-        self.register_option('VERBOSE', verbose, False, 'Verbose mode')
 
         self.load_modules()
         # self.show_banner()
@@ -198,9 +195,20 @@ class Base(framework.Framework):
         descriptions = [item['description'] for item in self.options.values()]
 
         # calc max column length
-        key_maxlen = max(self.max_len(keys), len(menu_title[0]))
-        val_maxlen = max(self.max_len(values), len(menu_title[1]))
-        des_maxlen = max(self.max_len(descriptions), len(menu_title[2]))
+        if len(keys) > 0:
+            key_maxlen = max(self.max_len(keys), len(menu_title[0]))
+        else:
+            key_maxlen = len(menu_title[0])
+
+        if len(values) > 0:
+            val_maxlen = max(self.max_len(values), len(menu_title[1]))
+        else:
+            val_maxlen = len(menu_title[1])
+
+        if len(descriptions) > 0:
+            des_maxlen = max(self.max_len(descriptions), len(menu_title[2]))
+        else:
+            des_maxlen = len(menu_title[2])
 
         menu_fmt = "    %%-%ds  %%-%ds  %%-%ds" % (
             key_maxlen, val_maxlen, des_maxlen)
