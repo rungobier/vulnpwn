@@ -6,6 +6,7 @@
 ##
 
 from lib.base import framework
+from lib.utils import randoms
 import threadpool
 import sys
 import imp
@@ -16,8 +17,10 @@ class Base(framework.Framework):
     def __init__(self, verbose=False):
         framework.Framework.__init__(self, verbose)
 
+        self.logos_path = "%s%s%s%s" % (self.data_path, self.path_sep,
+                                        'logos', self.path_sep)
         self.load_modules()
-        # self.show_banner()
+        ('base.base' in self.__module__) and self.show_banner()
 
     # ======================
     #  FRAMEWORK MODULES
@@ -242,9 +245,17 @@ class Base(framework.Framework):
 
     def show_banner(self):
         """Show banner"""
-        self.output('')
-        path = "%s%s" % (self.data_path, 'banner.txt')
-        self.output(self.readfile(path))
+        colors = [framework.Colors.R, framework.Colors.G,
+                  framework.Colors.O, framework.Colors.B]
+
+        logo_files = self.dirwalk(self.logos_path)
+        logo_color = randoms.rand_item_from_iters(colors)
+        path = randoms.rand_item_from_iters(logo_files)
+
+        if path:
+            print(logo_color)
+            print(self.readfile(path))
+            print(framework.Colors.N)
 
     def complete_show(self, line, text, *ignored):
         """Tab complete show"""
