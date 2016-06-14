@@ -55,3 +55,8 @@ def rand_text_alphanumeric():
 def rand_text_numeric(length, bad=''):
     '''generate a random string with numerals chars'''
     return rand_base(length, bad, set(numerals))
+
+
+def rand_item_from_iters(iter):
+    '''choose a random item from iters'''
+    return rand_base(1, '', iter)
