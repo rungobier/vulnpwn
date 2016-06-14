@@ -19,6 +19,10 @@ class Base(framework.Framework):
 
         self.logos_path = "%s%s%s%s" % (self.data_path, self.path_sep,
                                         'logos', self.path_sep)
+        self.count_auxiliary = 0
+        self.count_exploit = 0
+        self.count_payload = 0
+
         self.load_modules()
         ('base.base' in self.__module__) and self.show_banner()
 
@@ -39,6 +43,13 @@ class Base(framework.Framework):
         fname = self.filename(filename)
 
         if filename.endswith('.py'):
+            if 'modules/auxiliary/' in filename:
+                self.count_auxiliary += 1
+            elif 'modules/exploits/' in filename:
+                self.count_exploit += 1
+            elif 'modules/payload/' in filename:
+                self.count_payload += 1
+
             mod_loadpath = filename.replace(self.mods_path, '')
             mod_loadpath = mod_dispname = mod_loadpath.replace('.py', '')
             mod_loadpath = mod_loadpath.replace('/', '_')
@@ -249,12 +260,24 @@ class Base(framework.Framework):
                   framework.Colors.O, framework.Colors.B]
 
         logo_files = self.dirwalk(self.logos_path)
-        logo_color = randoms.rand_item_from_iters(colors)
         path = randoms.rand_item_from_iters(logo_files)
 
         if path:
-            print(logo_color)
+            # print logo
+            print(randoms.rand_item_from_iters(colors))
             print(self.readfile(path))
+            print(framework.Colors.N)
+
+            # print module total information
+            print(randoms.rand_item_from_iters(colors))
+            info = ('       =[ %s v1.00                      ]=\n'
+                    '+ -- --=[ %04d exploits                      ]=-- -- +\n'
+                    '+ -- --=[ %04d auxiliary                     ]=-- -- +\n'
+                    '+ -- --=[ %04d payloads                      ]=-- -- +\n'
+                    '+ -- --=[ get more about security !          ]=-- -- +\n'
+                    % (self.app_name, self.count_exploit,
+                       self.count_auxiliary, self.count_payload))
+            print(info)
             print(framework.Colors.N)
 
     def complete_show(self, line, text, *ignored):
