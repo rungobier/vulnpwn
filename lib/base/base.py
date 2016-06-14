@@ -47,7 +47,7 @@ class Base(framework.Framework):
                 self.count_auxiliary += 1
             elif 'modules/exploits/' in filename:
                 self.count_exploit += 1
-            elif 'modules/payload/' in filename:
+            elif 'modules/payloads/' in filename:
                 self.count_payload += 1
 
             mod_loadpath = filename.replace(self.mods_path, '')
@@ -271,12 +271,12 @@ class Base(framework.Framework):
             # print module total information
             print(randoms.rand_item_from_iters(colors))
             info = ('       =[ %s v1.00                      ]=\n'
-                    '+ -- --=[ %04d exploits                      ]=-- -- +\n'
                     '+ -- --=[ %04d auxiliary                     ]=-- -- +\n'
+                    '+ -- --=[ %04d exploits                      ]=-- -- +\n'
                     '+ -- --=[ %04d payloads                      ]=-- -- +\n'
                     '+ -- --=[ get more about security !          ]=-- -- +\n'
-                    % (self.app_name, self.count_exploit,
-                       self.count_auxiliary, self.count_payload))
+                    % (self.app_name, self.count_auxiliary,
+                       self.count_exploit, self.count_payload))
             print(info)
             print(framework.Colors.N)
 
