@@ -193,7 +193,7 @@ class Base(framework.Framework):
             self.help_show()
             return False
 
-        if key in ('options', 'modules'):
+        if key in ('options', 'modules', 'banner'):
             method = 'show_%s' % key
 
             if hasattr(self, method):
