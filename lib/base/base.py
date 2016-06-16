@@ -1,8 +1,8 @@
 #!/usr/bin/python
-# -*-  coding: utf-8 -*-v
+# -*-  coding: utf-8 -*-
 
 ##
-# Current source: https://github.com/open-security/Open-Security-Framework/
+# Current source: https://github.com/open-security/vulnpwn/
 ##
 
 from lib.base import framework
