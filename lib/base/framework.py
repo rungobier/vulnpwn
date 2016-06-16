@@ -11,17 +11,6 @@ import cmd
 import subprocess
 
 
-class Items(dict):
-    """Core Options Items"""
-    def __init__(self, *args, **kwargs):
-        super(Items, self).__init__(*args, **kwargs)
-        self.__dict__ = self
-
-
-class FrameworkExpception(Exception):
-    pass
-
-
 class Colors(object):
     N = '\033[m'    # native
     R = '\033[31m'  # red
@@ -49,11 +38,6 @@ class Framework(cmd.Cmd):
         """init core framework"""
         cmd.Cmd.__init__(self)
         self.do_help.__func__.__doc__ = """Show help menu"""
-
-        self.options = Items()
-        self.modules = Items()
-
-        self.framework_path = __file__
 
         self.path_sep = os.path.sep
         self.verbose = verbose
@@ -210,31 +194,6 @@ class Framework(cmd.Cmd):
             dirs.extend(filepaths)
 
         return list(set(dirs))
-
-    # ======================
-    #  OPTIONS COMMANDS
-    # ======================
-
-    def register_option(self, key, value, default, description):
-        """register option item to global options"""
-        key = self.getUnicode(key)
-        self.options[key] = Items()
-        if value:
-            self.options[key]['value'] = self.getUnicode(value)
-        else:
-            self.options[key]['value'] = self.getUnicode(default)
-        self.options[key]['description'] = self.getUnicode(description)
-
-        return self.options
-
-    def register_module(self, name, dispname, loadpath, mod_obj):
-        """register module item to global modules"""
-        name = self.getUnicode(name)
-        self.modules[name] = Items()
-        if mod_obj:
-            self.modules[name]['dispname'] = dispname
-            self.modules[name]['loadpath'] = loadpath
-            self.modules[name]['modobj'] = mod_obj
 
     # ======================
     #  FRAMEWORK COMMANDS
