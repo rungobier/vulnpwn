@@ -15,10 +15,14 @@ import subprocess
 
 import readline
 import rlcompleter
+
 if 'libedit' in readline.__doc__:
     readline.parse_and_bind("bind ^I rl_complete")
 else:
     readline.parse_and_bind("tab: complete")
+
+readline.parse_and_bind("set enable-keypad on")
+readline.set_completer_delims(" \t\n;")
 
 
 class Items(dict):
