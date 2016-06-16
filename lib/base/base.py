@@ -7,32 +7,86 @@
 
 from lib.base import framework
 from lib.utils import randoms
+from lib.core import item
 import threadpool
 import sys
 import imp
+import os
 
 
 class Base(framework.Framework):
-
     def __init__(self, verbose=False):
+        self.prompt = 'vulnpwn > '
+        self.prompt_fmt = '%s (\033[33m%s\033[m) > '
+
+        self.options = item.Items()
+        self.mod_info = item.Items()
+
         framework.Framework.__init__(self, verbose)
 
-        self.logos_path = "%s%s%s%s" % (self.data_path, self.path_sep,
-                                        'logos', self.path_sep)
+        self.app_name = 'vulnpwn'
+        self.app_path = self.dirpath(self.dirpath(self.dirpath(__file__)))
+
+        self.data_path = os.path.join(self.app_path, 'data', '')
+        self.logos_path = os.path.join(self.app_path, 'data', 'logos', '')
+        self.mods_path = os.path.join(self.app_path, 'modules', '')
+
         self.count_auxiliary = 0
         self.count_exploit = 0
         self.count_payload = 0
 
         self.loaded_modules = []
-        self.available_modules_types = ('auxiliary', 'exploits', 'payloads')
-        self.show_commands = [m for m in dir(self) if m.startswith('show_')]
+        # self.modules = self.index_modules(self.mods_path)
+        self.modules_dirs = [_ for _ in os.listdir(self.mods_path)
+                             if not _.startswith("__")]
 
-        self.load_modules()
+        self.show_commands = [_ for _ in dir(self) if _.startswith('show_')]
+
+        self.import_modules()
         ('base.base' in self.__module__) and self.show_banner()
+
+    # ======================
+    #  OPTIONS COMMANDS
+    # ======================
+
+    def register_option(self, key, value, default, description):
+        """register option item to global options"""
+        key = self.getUnicode(key)
+        self.options[key] = item.Items()
+        if value:
+            self.options[key]['value'] = self.getUnicode(value)
+        else:
+            self.options[key]['value'] = self.getUnicode(default)
+        self.options[key]['description'] = self.getUnicode(description)
+
+        return self.options
 
     # ======================
     #  FRAMEWORK MODULES
     # ======================
+
+    def index_modules(self, mods_dir):
+        """ Return list of all exploits modules """
+
+        modules = []
+        for root, dirs, files in os.walk(mods_dir):
+            _, package, root = root.rpartition(mods_dir.replace('/', os.sep))
+            root = root.replace(os.sep, '.')
+            files = filter(
+                 lambda x: not x.startswith("__") and x.endswith('.py'), files)
+            modules.extend(
+                map(lambda x: '.'.join((root, os.path.splitext(x)[0])), files))
+
+        return modules
+
+    def register_module(self, name, dispname, loadpath, mod_obj):
+        """register module item to global modules"""
+        name = self.getUnicode(name)
+        self.mod_info[name] = item.Items()
+        if mod_obj:
+            self.mod_info[name]['dispname'] = dispname
+            self.mod_info[name]['loadpath'] = loadpath
+            self.mod_info[name]['modobj'] = mod_obj
 
     def handle_loadmod_exception(self, func, *args, **kwargs):
         """handle module load exception"""
@@ -41,7 +95,7 @@ class Base(framework.Framework):
         except ImportError:
             return None
 
-    def load_module(self, filename):
+    def import_module(self, filename):
         """Load a single framwork module"""
         # dname = self.dirpath(filename)
         fname = self.filename(filename)
@@ -68,7 +122,7 @@ class Base(framework.Framework):
                 self.handle_loadmod_exception(
                     imp.load_source, mod_loadpath, filename, fp)
 
-                if mod_name not in self.modules:
+                if mod_name not in self.mod_info:
                     self.debug("Load Module => %s" % mod_dispname)
                     __import__(mod_loadpath)
 
@@ -79,18 +133,18 @@ class Base(framework.Framework):
                     self.register_module(
                         mod_name, mod_dispname, filename, mod_obj)
 
-        return self.modules
+        return self.mod_info
 
-    def load_modules(self):
+    def import_modules(self):
         """Load framework modules"""
         mods = [mod for mod in self.dirwalk(self.mods_path)
-                if ('__init__' not in mod) and mod.endswith('.py')]
-        map(self.load_module, mods)
+                if ('__init__.py' not in mod) and mod.endswith('.py')]
+        map(self.import_module, mods)
 
     def find_module(self, dispname):
         """find module fullpath with dispname"""
-        for key in self.modules.keys():
-            mod = self.modules[key]
+        for key in self.mod_info.keys():
+            mod = self.mod_info[key]
             if ('dispname' in mod) and (mod['dispname'] == dispname):
                 return mod
 
@@ -154,7 +208,7 @@ class Base(framework.Framework):
         modobj = mod['modobj'] if mod else None
 
         # self.output("[+] Load Module => %s" % loadpath)
-        self.load_module(loadpath)
+        self.import_module(loadpath)
 
         if hasattr(modobj, 'cmdloop'):
             plugin = modobj()
@@ -253,11 +307,11 @@ class Base(framework.Framework):
     def show_modules(self):
         """Show available modules"""
         self.output('')
-        for key in self.modules.keys():
+        for key in self.mod_info.keys():
             # mod_name = key
-            # mod_loadpath = self.modules[key]['loadpath']
-            if 'dispname' in self.modules[key]:
-                mod_dispname = self.modules[key]['dispname']
+            # mod_loadpath = self.mod_info[key]['loadpath']
+            if 'dispname' in self.mod_info[key]:
+                mod_dispname = self.mod_info[key]['dispname']
                 self.output("    %s" % mod_dispname)
         self.output('')
 
@@ -304,7 +358,7 @@ class Base(framework.Framework):
         if line:
             return self.available_modules_completion(line)
         else:
-            return self.available_modules_types
+            return self.modules_dirs
 
     def available_show_completion(self, text):
         """match all possible show commands"""
