@@ -2,27 +2,13 @@
 # -*- coding: utf-8 -*-
 
 ##
-# Current source: https://github.com/open-security/Open-Security-Framework/
+# Current source: https://github.com/open-security/vulnpwn/
 ##
 
 import io
 import os
 import cmd
 import subprocess
-
-# Enable OSX Tab Completion
-# http://stackoverflow.com/questions/7116038/python-tab-completion-mac-osx-10-7-lion
-
-import readline
-import rlcompleter
-
-if 'libedit' in readline.__doc__:
-    readline.parse_and_bind("bind ^I rl_complete")
-else:
-    readline.parse_and_bind("tab: complete")
-
-readline.parse_and_bind("set enable-keypad on")
-readline.set_completer_delims(" \t\n;")
 
 
 class Items(dict):

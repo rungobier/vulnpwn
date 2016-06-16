@@ -1,8 +1,8 @@
-#!/usr/bin/python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+# -*-  coding: utf-8 -*-
 
 ##
-# Current source: https://github.com/open-security/Open-Security-Framework/
+# Current source: https://github.com/open-security/vulnpwn/
 ##
 
 from lib.core import payload
