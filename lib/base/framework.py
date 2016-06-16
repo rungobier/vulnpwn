@@ -32,9 +32,6 @@ class Colors(object):
 
 class Framework(cmd.Cmd):
     """Core Framework"""
-
-    prompt = 'vulnpwn > '
-    prompt_fmt = '%s (\033[33m%s\033[m) > '
     ruler = ':'
     lastcmd = ''
     intro = None
@@ -59,17 +56,6 @@ class Framework(cmd.Cmd):
         self.framework_path = __file__
 
         self.path_sep = os.path.sep
-        self.app_name = 'vulnpwn'
-        self.app_path = self.dirpath(self.dirpath(self.dirpath(
-            self.framework_path)))
-
-        # (os.join.path) will return a invalid path
-        self.data_path = "%s%s%s%s" % (self.app_path, self.path_sep,
-                                       'data', self.path_sep)
-        self.mods_path = "%s%s%s%s" % (self.app_path, self.path_sep,
-                                       'modules', self.path_sep)
-
-        self.home_path = os.path.expanduser('~')    # Current User home path
         self.verbose = verbose
 
     def emptyline(self):
