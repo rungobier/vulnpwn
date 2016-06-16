@@ -21,6 +21,11 @@ The quick way:
 
 ![](screenshot.png)
 
+## Features
+
+- Tab Completion
+- Module extension design
+
 ## Documentation
 
 Documentation is available in [wiki](https://github.com/open-security/vulnpwn/wiki) pages.
