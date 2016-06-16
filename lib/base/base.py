@@ -23,6 +23,10 @@ class Base(framework.Framework):
         self.count_exploit = 0
         self.count_payload = 0
 
+        self.loaded_modules = []
+        self.available_modules_types = ('auxiliary', 'exploits', 'payloads')
+        self.show_commands = [m for m in dir(self) if m.startswith('show_')]
+
         self.load_modules()
         ('base.base' in self.__module__) and self.show_banner()
 
@@ -52,6 +56,10 @@ class Base(framework.Framework):
 
             mod_loadpath = filename.replace(self.mods_path, '')
             mod_loadpath = mod_dispname = mod_loadpath.replace('.py', '')
+
+            if mod_loadpath not in self.loaded_modules:
+                self.loaded_modules.append(mod_loadpath)
+
             mod_loadpath = mod_loadpath.replace('/', '_')
             mod_name = fname.replace('.py', '')
             fp = open(filename) if self.is_exists(filename) else None
@@ -132,8 +140,14 @@ class Base(framework.Framework):
         """Edit current module"""
         self.editfile(sys.argv[0])
 
-    def do_load(self, line):
+    def do_use(self, line):
         """Load framework module"""
+        key, value, paris = self.parseline(line)
+
+        if (not key):
+            self.help_load()
+            return False
+
         mod = self.find_module(line)
 
         loadpath = mod['loadpath'] if mod else ''
@@ -146,11 +160,6 @@ class Base(framework.Framework):
             plugin = modobj()
             plugin.prompt = self.prompt_fmt % (self.app_name, mod['dispname'])
             plugin.cmdloop()
-
-    # do_use = do_load
-    def do_use(self, line):
-        """Load framework module"""
-        self.do_load(line)
 
     #  **** SET METHODS ****
 
@@ -193,12 +202,10 @@ class Base(framework.Framework):
             self.help_show()
             return False
 
-        if key in ('options', 'modules', 'banner'):
-            method = 'show_%s' % key
-
-            if hasattr(self, method):
-                func = getattr(self, method)
-                func()
+        method = 'show_%s' % key
+        if method in self.show_commands and hasattr(self, method):
+            func = getattr(self, method)
+            func()
 
     def show_options(self):
         """Show current options"""
@@ -280,11 +287,32 @@ class Base(framework.Framework):
             print(info)
             print(framework.Colors.N)
 
+    #  **** COMPLETE METHODS ****
+
     def complete_show(self, line, text, *ignored):
         """Tab complete show"""
-        methods = [m for m in dir(self) if m.startswith('show_')]
-        methods = map(lambda x: x.replace('show_', ''), methods)
-        return methods
+        if line:
+            line = "show_%s" % line
+            methods = self.available_show_completion(line)
+        else:
+            methods = self.show_commands
+
+        return map(lambda x: x.replace('show_', ''), methods)
+
+    def complete_use(self, line, text, *ignored):
+        """Tab complete show"""
+        if line:
+            return self.available_modules_completion(line)
+        else:
+            return self.available_modules_types
+
+    def available_show_completion(self, text):
+        """match all possible show commands"""
+        return filter(lambda x: x.startswith(text), self.show_commands)
+
+    def available_modules_completion(self, text):
+        """match all possible modules"""
+        return filter(lambda x: x.startswith(text), self.loaded_modules)
 
     # ======================
     #  FRAMEWORK COMMANDS
@@ -294,13 +322,6 @@ class Base(framework.Framework):
         self.output('  Usage :  edit <module>')
         self.output('  Desp  :  %s' % getattr(self, 'do_edit').__doc__)
         self.output('  Demo  :  edit')
-        self.output('')
-
-    def help_load(self):
-        self.output('')
-        self.output('  Usage :  load <module>')
-        self.output('  Desp  :  %s' % getattr(self, 'do_load').__doc__)
-        self.output('  Demo  :  load auxiliary/scanner/http/http_title')
         self.output('')
 
     def help_set(self):
