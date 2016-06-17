@@ -21,7 +21,7 @@ class Colors(object):
 
 class Framework(cmd.Cmd):
     """Core Framework"""
-    ruler = ':'
+    ruler = '='
     lastcmd = ''
     intro = None
     doc_leader = ''
