@@ -11,17 +11,6 @@ import cmd
 import subprocess
 
 
-class Items(dict):
-    """Core Options Items"""
-    def __init__(self, *args, **kwargs):
-        super(Items, self).__init__(*args, **kwargs)
-        self.__dict__ = self
-
-
-class FrameworkExpception(Exception):
-    pass
-
-
 class Colors(object):
     N = '\033[m'    # native
     R = '\033[31m'  # red
@@ -32,10 +21,7 @@ class Colors(object):
 
 class Framework(cmd.Cmd):
     """Core Framework"""
-
-    prompt = 'vulnpwn > '
-    prompt_fmt = '%s (\033[33m%s\033[m) > '
-    ruler = ':'
+    ruler = '='
     lastcmd = ''
     intro = None
     doc_leader = ''
@@ -53,23 +39,7 @@ class Framework(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.do_help.__func__.__doc__ = """Show help menu"""
 
-        self.options = Items()
-        self.modules = Items()
-
-        self.framework_path = __file__
-
         self.path_sep = os.path.sep
-        self.app_name = 'vulnpwn'
-        self.app_path = self.dirpath(self.dirpath(self.dirpath(
-            self.framework_path)))
-
-        # (os.join.path) will return a invalid path
-        self.data_path = "%s%s%s%s" % (self.app_path, self.path_sep,
-                                       'data', self.path_sep)
-        self.mods_path = "%s%s%s%s" % (self.app_path, self.path_sep,
-                                       'modules', self.path_sep)
-
-        self.home_path = os.path.expanduser('~')    # Current User home path
         self.verbose = verbose
 
     def emptyline(self):
@@ -224,31 +194,6 @@ class Framework(cmd.Cmd):
             dirs.extend(filepaths)
 
         return list(set(dirs))
-
-    # ======================
-    #  OPTIONS COMMANDS
-    # ======================
-
-    def register_option(self, key, value, default, description):
-        """register option item to global options"""
-        key = self.getUnicode(key)
-        self.options[key] = Items()
-        if value:
-            self.options[key]['value'] = self.getUnicode(value)
-        else:
-            self.options[key]['value'] = self.getUnicode(default)
-        self.options[key]['description'] = self.getUnicode(description)
-
-        return self.options
-
-    def register_module(self, name, dispname, loadpath, mod_obj):
-        """register module item to global modules"""
-        name = self.getUnicode(name)
-        self.modules[name] = Items()
-        if mod_obj:
-            self.modules[name]['dispname'] = dispname
-            self.modules[name]['loadpath'] = loadpath
-            self.modules[name]['modobj'] = mod_obj
 
     # ======================
     #  FRAMEWORK COMMANDS
