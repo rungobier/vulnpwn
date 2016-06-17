@@ -10,15 +10,15 @@ from lib.core import payload
 
 class Module(payload.Payload):
 
-    meta = {
+    __info__ = {
         'name': 'Linux/x86 - execve /bin/sh shellcode',
-        'author': 'B3mB4m',
-        'description': '',
-        'comments': '',
+        'description': 'Linux/x86 execve /bin/sh shellcode 23 bytes',
+        'license': 'APACHE_LICENSE',
+        'disclosureDate': 'Jun 7 2015',
+        'author': ['shell-storm'],
         'references': [
             'http://shell-storm.org/shellcode/files/shellcode-827.php'
         ],
-        'license': '',
         'options': {
         }
     }
