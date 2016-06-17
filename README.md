@@ -25,6 +25,7 @@ The quick way:
 
 - Tab Completion
 - Module extension design
+- Module validation
 
 ## Documentation
 
