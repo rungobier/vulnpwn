@@ -15,9 +15,8 @@ import os
 class Base(framework.Framework):
     def __init__(self, verbose=False):
         self.app_name = 'vulnpwn'
-        self.module_prompt_fmt = '%s \033[33m%s\033[m > '
-        self.origin_prompt_fmt = '%s > '
-        self.prompt = self.origin_prompt_fmt % self.app_name
+        self.prompt_fmt = '%s > '
+        self.prompt = self.prompt_fmt % self.app_name
 
         framework.Framework.__init__(self, verbose)
 
@@ -36,7 +35,7 @@ class Base(framework.Framework):
         self.show_commands = [_ for _ in dir(self) if _.startswith('show_')]
 
         # self.import_modules()
-        ('base.base' in self.__module__) and self.do_banner()
+        ('base.base' in self.__module__) and self.do_banner(None)
 
     def index_modules(self, mods_dir):
         """ Return list of all exploits modules """
@@ -76,9 +75,9 @@ class Base(framework.Framework):
 
     def do_back(self, line):
         """Move back from the current context"""
-        self.prompt = self.origin_prompt_fmt % self.app_name
+        self.prompt = self.prompt_fmt % self.app_name
 
-    def do_banner(self):
+    def do_banner(self, line):
         """Display an awesome framework banner"""
         colors = [framework.Colors.R, framework.Colors.G,
                   framework.Colors.O, framework.Colors.B]
@@ -111,11 +110,14 @@ class Base(framework.Framework):
             self.help_load()
             return False
 
-        self.prompt = self.module_prompt_fmt % (self.app_name, line)
-
         module_path = line.replace(os.path.sep, '.')
         module_path = ''.join(['modules.', module_path])
+
         self.current_module = self.import_module(module_path)
+
+        if hasattr(self.current_module, 'Module'):
+            self.current_module = self.current_module.Module()
+            self.current_module.cmdloop()
 
     def do_show(self, line):
         """Show available options / modules"""
