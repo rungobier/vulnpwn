@@ -16,13 +16,6 @@ class Payload(module.Module):
     def generate_shellcode(self):
         pass
 
-    def do_generate(self, line):
+    def do_run(self, line):
         '''generate a payload shellcode'''
         self.generate_shellcode()
-
-    def help_generate():
-        self.output('')
-        self.output('  Usage :  generate')
-        self.output('  Desp  :  %s' % getattr(self, 'do_generate').__doc__)
-        self.output('  Demo  :  generate')
-        self.output('')
