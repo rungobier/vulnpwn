@@ -100,7 +100,9 @@ class Base(framework.Framework):
 
     def do_edit(self, line):
         """Edit the current module with $VISUAL or $EDITOR"""
-        self.editfile(sys.argv[0])
+        filename = self.__module__.replace('.', self.path_sep)
+        filename = ''.join([self.app_path, self.path_sep, filename, '.py'])
+        self.editfile(filename)
 
     def do_use(self, line):
         """Load framework module"""
