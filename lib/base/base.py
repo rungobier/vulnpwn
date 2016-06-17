@@ -68,10 +68,12 @@ class Base(framework.Framework):
         except (ImportError, AttributeError, KeyError) as err:
             print(err)
 
-    def import_modules(self):
+    def import_modules(self, all_modules):
         """Load all valid modules"""
-        modules = map(lambda x: "".join(['modules.', x]), self.modules)
-        map(self.import_module, modules)
+        modules = map(lambda x: "".join(['modules.', x]), all_modules)
+        for module in modules:
+            yield self.import_module(module)
+        # map(self.import_module, modules)
 
     def do_back(self, line):
         """Move back from the current context"""
