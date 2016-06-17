@@ -26,11 +26,11 @@ class Module(base.Base):
 
     def __init__(self):
         base.Base.__init__(self, verbose=False)
-        self.prompt_fmt = '%s (\033[33m%s\033[m) > '
+        self.prompt_mod_fmt = '%s (\033[33m%s\033[m) > '
         self.prompt_mod = self.__module__.replace('.', self.path_sep)
         self.prompt_mod = self.prompt_mod.replace(
             'modules%s' % self.path_sep, '')
-        self.prompt = self.prompt_fmt % (self.app_name, self.prompt_mod)
+        self.prompt = self.prompt_mod_fmt % (self.app_name, self.prompt_mod)
 
         self.check_module_info()
         self.options = item.Items()
