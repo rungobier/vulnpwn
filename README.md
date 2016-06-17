@@ -17,9 +17,15 @@
 
 ## Usage
 
+### console
+
 The quick way:
 
 ![](screenshot.png)
+
+### autopwn
+
+![](autopwn.png)
 
 ## Features
 
