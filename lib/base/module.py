@@ -116,9 +116,10 @@ class Module(base.Base):
             for _ in authors:
                 self.output("  %s" % _)
 
-        self.output("")
-        self.output("Basic options:")
-        self.show_options()
+        if hasattr(self.options, 'keys') and self.options.keys():
+            self.output("")
+            self.output("Basic options:")
+            self.show_options()
 
         self.output("")
         self.output("Description:")
