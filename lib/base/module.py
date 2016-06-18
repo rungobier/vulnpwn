@@ -70,6 +70,9 @@ class Module(base.Base):
         """Show current options"""
         menu_title = ('Name', 'Current Setting', 'Description')
 
+        if not (hasattr(self.options, 'keys') and self.options.keys()):
+            return
+
         keys = self.options.keys()
         values = [_[0] for _ in self.options.values()]
         descriptions = [_[1] for _ in self.options.values()]
