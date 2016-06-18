@@ -25,13 +25,55 @@ The quick way:
 
 ### autopwn
 
-![](autopwn.png)
+Autopwn is a gun for you to scan target with multi pocs.
+
+```
+vulnpwn > use exploits/autopwn
+vulnpwn (exploits/autopwn) > show options
+[*]
+[*]     Name   Current Setting  Description
+[*]     -----  ---------------  ---------------
+[*]     RHOST  192.168.1.1      the target host
+[*]     RPORT  80               the target port
+[*]
+vulnpwn (exploits/autopwn) > info
+[*]
+[*]         Name : autopwn scanner
+[*]       Module : modules.exploits.autopwn
+[*]      Licnese : APACHE_LICENSE
+[*]    Disclosed : June 10 2016
+[*]
+[*] Provided by:
+[*]   Open-Security
+[*]
+[*] Basic options:
+[*]
+[*]     Name   Current Setting  Description
+[*]     -----  ---------------  ---------------
+[*]     RHOST  192.168.1.1      the target host
+[*]     RPORT  80               the target port
+[*]
+[*]
+[*] Description:
+[*]   scan target with all exploits modules automatically
+[*]
+[*] References:
+[*]   https://github.com/open-security/vulnpwn
+[*]
+vulnpwn (exploits/autopwn) > run
+[*] Exploiting - http://192.168.1.1:80/command.php
+[*] Exploiting - http://192.168.1.1:80/diagnostic.php
+[*] Exploiting - http://172.16.176.226:8080/struts2-blank/example/HelloWorld.action
+^C[*]
+[*] exit.
+```
 
 ## Features
 
 - Tab Completion
 - Module extension design
 - Module validation
+- Autopwn
 
 ## Documentation
 
