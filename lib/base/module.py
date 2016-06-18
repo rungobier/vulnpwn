@@ -100,6 +100,43 @@ class Module(base.Base):
 
         self.output('')
 
+    def do_info(self, *args, **kwargs):
+        """Displays information about one or more modules"""
+        self.output("")
+        self.output("%12s : %s" % ('Name', self.__info__.get('name')))
+        self.output("%12s : %s" % ('Module', self.__module__))
+        self.output("%12s : %s" % ('Licnese', self.__info__.get('license')))
+        self.output("%12s : %s" % ('Disclosed',
+                    self.__info__.get('disclosureDate')))
+        self.output("")
+
+        authors = self.__info__.get('author')
+        if len(authors) > 0:
+            self.output("Provided by:")
+            for _ in authors:
+                self.output("  %s" % _)
+
+        if hasattr(self.options, 'keys') and self.options.keys():
+            self.output("")
+            self.output("Basic options:")
+            self.show_options()
+
+        self.output("")
+        self.output("Description:")
+        desc = self.__info__.get('description')
+        desc_lines = desc.splitlines()
+        if len(desc_lines) > 0:
+            for _ in desc_lines:
+                self.output("  %s" % _.strip())
+
+        self.output("")
+        self.output("References:")
+        refers = self.__info__.get('references')
+        if len(refers) > 0:
+            for _ in refers:
+                self.output("  %s" % _)
+        self.output("")
+
     def do_run(self, *args, **kwargs):
         """run module main function"""
         self.main(*args, **kwargs)
