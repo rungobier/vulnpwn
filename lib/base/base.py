@@ -66,7 +66,8 @@ class Base(framework.Framework):
             module = importlib.import_module(path)
             return module
         except (ImportError, AttributeError, KeyError) as err:
-            print(err)
+            # self.error(err)
+            pass
 
     def import_modules(self, all_modules):
         """Load all valid modules"""
