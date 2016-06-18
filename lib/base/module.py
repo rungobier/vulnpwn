@@ -6,7 +6,6 @@
 ##
 
 from lib.base import base
-from lib.core import item
 
 
 class Module(base.Base):
@@ -33,12 +32,7 @@ class Module(base.Base):
         self.prompt = self.prompt_mod_fmt % (self.app_name, self.prompt_mod)
 
         self.check_module_info()
-        self.options = item.Items()
-
-        # self.register_option(self, key, value, default, description):
-        for option in self.__info__['options'].items():
-            (key, [default_value, desc]) = option
-            self.register_option(key, default_value, desc)
+        self.options = self.__info__.get('options')
 
     # ======================
     #  OPTIONS COMMANDS
@@ -66,43 +60,26 @@ class Module(base.Base):
         if not self.__info__.get('options', None):
             self.error("Please set module 'options'")
 
-    def register_option(self, key, default_value, description):
-        """register option item to global options"""
-        key = self.getUnicode(key)
-
-        self.options[key] = item.Items()
-        self.options[key]['value'] = self.getUnicode(default_value)
-        self.options[key]['description'] = self.getUnicode(description)
-
-        return self.options
-
-    def max_len(self, values):
-        """Show options information with a pretty format"""
-        return len(max(values, key=len))
+    def get_option_value(self, key):
+        value = None
+        if key in self.options:
+            value = self.options.get(key)[0]
+        return value
 
     def show_options(self):
         """Show current options"""
-        menu_title = ('Option', 'Current Setting', 'Description')
+        menu_title = ('Name', 'Current Setting', 'Description')
 
         keys = self.options.keys()
-        values = [item['value'] for item in self.options.values()]
-        descriptions = [item['description'] for item in self.options.values()]
+        values = [_[0] for _ in self.options.values()]
+        descriptions = [_[1] for _ in self.options.values()]
 
-        # calc max column length
-        if len(keys) > 0:
-            key_maxlen = max(self.max_len(keys), len(menu_title[0]))
-        else:
-            key_maxlen = len(menu_title[0])
-
-        if len(values) > 0:
-            val_maxlen = max(self.max_len(values), len(menu_title[1]))
-        else:
-            val_maxlen = len(menu_title[1])
-
-        if len(descriptions) > 0:
-            des_maxlen = max(self.max_len(descriptions), len(menu_title[2]))
-        else:
-            des_maxlen = len(menu_title[2])
+        key_maxlen = max(len(max(map(self.getUnicode, keys), key=len)),
+                         len(menu_title[0]))
+        val_maxlen = max(len(max(map(self.getUnicode, values), key=len)),
+                         len(menu_title[1]))
+        des_maxlen = max(len(max(map(self.getUnicode, descriptions), key=len)),
+                         len(menu_title[2]))
 
         menu_fmt = "    %%-%ds  %%-%ds  %%-%ds" % (
             key_maxlen, val_maxlen, des_maxlen)
@@ -139,9 +116,9 @@ class Module(base.Base):
             self.error('Please choose a valid option key')
             return False
 
-        self.register_option(key, value, '')
-        self.output("SET => %s = (%s) " % (key, value))
-        self.options[key]['value'] = value
+        self.output("%s => %s" % (key, value))
+        _, description = self.options.get(key)
+        self.options[key] = [value, description]
 
     def do_unset(self, line):
         """Unset the option"""
@@ -150,7 +127,9 @@ class Module(base.Base):
             return False
 
         if line in self.options:
-            self.options[line]['value'] = ''
+            value, description = self.options.get(line)
+            value = None
+            self.options[line] = [value, description]
 
     def help_set(self):
         self.output('')
